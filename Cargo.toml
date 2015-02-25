@@ -1,0 +1,5 @@
+[package]
+
+name = "chess"
+version = "0.0.1"
+authors = ["Ryan Hiebert <ryan@ryanhiebert.com>"]
