@@ -2,7 +2,7 @@ use color::Color;
 use piece::{Piece, Rank};
 use ply::Ply;
 
-#[derive(PartialEq)]
+#[derive(Copy, PartialEq)]
 pub enum Tile {
     Empty,
     Taken(Piece),
@@ -29,42 +29,12 @@ impl Board {
                     Tile::Taken(Piece{ rank: Rank::Knight, color: Color::White }),
                     Tile::Taken(Piece{ rank: Rank::Rook, color: Color::White }),
                 ],
-                [
-                    Tile::Taken(Piece{ rank: Rank::Pawn, color: Color::White }),
-                    Tile::Taken(Piece{ rank: Rank::Pawn, color: Color::White }),
-                    Tile::Taken(Piece{ rank: Rank::Pawn, color: Color::White }),
-                    Tile::Taken(Piece{ rank: Rank::Pawn, color: Color::White }),
-                    Tile::Taken(Piece{ rank: Rank::Pawn, color: Color::White }),
-                    Tile::Taken(Piece{ rank: Rank::Pawn, color: Color::White }),
-                    Tile::Taken(Piece{ rank: Rank::Pawn, color: Color::White }),
-                    Tile::Taken(Piece{ rank: Rank::Pawn, color: Color::White }),
-                ],
-                [
-                    Tile::Empty, Tile::Empty, Tile::Empty, Tile::Empty,
-                    Tile::Empty, Tile::Empty, Tile::Empty, Tile::Empty,
-                ],
-                [
-                    Tile::Empty, Tile::Empty, Tile::Empty, Tile::Empty,
-                    Tile::Empty, Tile::Empty, Tile::Empty, Tile::Empty,
-                ],
-                [
-                    Tile::Empty, Tile::Empty, Tile::Empty, Tile::Empty,
-                    Tile::Empty, Tile::Empty, Tile::Empty, Tile::Empty,
-                ],
-                [
-                    Tile::Empty, Tile::Empty, Tile::Empty, Tile::Empty,
-                    Tile::Empty, Tile::Empty, Tile::Empty, Tile::Empty,
-                ],
-                [
-                    Tile::Taken(Piece{ rank: Rank::Pawn, color: Color::Black }),
-                    Tile::Taken(Piece{ rank: Rank::Pawn, color: Color::Black }),
-                    Tile::Taken(Piece{ rank: Rank::Pawn, color: Color::Black }),
-                    Tile::Taken(Piece{ rank: Rank::Pawn, color: Color::Black }),
-                    Tile::Taken(Piece{ rank: Rank::Pawn, color: Color::Black }),
-                    Tile::Taken(Piece{ rank: Rank::Pawn, color: Color::Black }),
-                    Tile::Taken(Piece{ rank: Rank::Pawn, color: Color::Black }),
-                    Tile::Taken(Piece{ rank: Rank::Pawn, color: Color::Black }),
-                ],
+                [Tile::Taken(Piece{ rank: Rank::Pawn, color: Color::White }); 8],
+                [Tile::Empty; 8],
+                [Tile::Empty; 8],
+                [Tile::Empty; 8],
+                [Tile::Empty; 8],
+                [Tile::Taken(Piece{ rank: Rank::Pawn, color: Color::Black }); 8],
                 [
                     Tile::Taken(Piece{ rank: Rank::Rook, color: Color::White }),
                     Tile::Taken(Piece{ rank: Rank::Knight, color: Color::White }),
