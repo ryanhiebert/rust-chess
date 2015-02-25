@@ -1,5 +1,7 @@
+use color::Color;
+
 #[derive(PartialEq)]
-pub enum Piece {
+pub enum Rank {
     Pawn,
     Rook,
     Knight,
@@ -8,13 +10,33 @@ pub enum Piece {
     King,
 }
 
+#[derive(PartialEq)]
+pub struct Piece {
+    pub rank: Rank,
+    pub color: Color,
+}
+
+
+#[test]
+fn ranks() {
+    assert!(Rank::Pawn == Rank::Pawn);
+    assert!(Rank::Rook == Rank::Rook);
+    assert!(Rank::Knight == Rank::Knight);
+    assert!(Rank::Bishop == Rank::Bishop);
+    assert!(Rank::Queen == Rank::Queen);
+    assert!(Rank::King == Rank::King);
+}
 
 #[test]
 fn pieces() {
-    assert!(Piece::Pawn == Piece::Pawn);
-    assert!(Piece::Rook == Piece::Rook);
-    assert!(Piece::Knight == Piece::Knight);
-    assert!(Piece::Bishop == Piece::Bishop);
-    assert!(Piece::Queen == Piece::Queen);
-    assert!(Piece::King == Piece::King);
+    let white = Piece { rank: Rank::Queen, color: Color::White };
+    let black = Piece { rank: Rank::King, color: Color::Black };
+
+    assert!(white == Piece { rank: Rank::Queen, color: Color::White });
+    assert!(black == Piece { rank: Rank::King, color: Color::Black });
+
+    assert!(white.rank == Rank::Queen);
+    assert!(white.color == Color::White);
+    assert!(black.rank == Rank::King);
+    assert!(black.color == Color::Black);
 }

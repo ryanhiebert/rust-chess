@@ -1,4 +1,5 @@
-use piece::Piece;
+use piece::{Piece, Rank};
+use color::Color;
 
 #[derive(PartialEq)]
 pub struct Location {
@@ -97,13 +98,17 @@ fn ply_promotion() {
         from: Location { rank: 4, file: 2 },
         to: Location { rank: 5, file: 3 },
     };
-    let promotion_ply = Ply::Promotion(mov, Piece::Knight);
+    let promotion_ply = Ply::Promotion(
+        mov, Piece { rank: Rank::Knight, color: Color::White });
 
     match promotion_ply {
         Ply::Promotion(unply, piece) => {
             assert!(unply.from == Location { rank: 4, file: 2 });
             assert!(unply.to == Location { rank: 5, file: 3 });
-            assert!(piece == Piece::Knight);
+            assert!(piece == Piece {
+                rank: Rank::Knight, color: Color::White });
+            assert!(piece.rank == Rank::Knight);
+            assert!(piece.color == Color::White);
         },
         _ => panic!("Not a promotion ply."),
     }
