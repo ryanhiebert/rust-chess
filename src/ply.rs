@@ -20,6 +20,7 @@ pub enum Ply {
     Castling(Move, Move),
 }
 
+
 #[cfg(test)]
 mod tests {
     use piece::{Piece, Rank};
