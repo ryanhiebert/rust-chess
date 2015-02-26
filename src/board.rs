@@ -55,14 +55,14 @@ impl Board {
                 [Tile::Empty; 8],
                 [Tile::Taken(Piece{ rank: Rank::Pawn, color: Color::Black }); 8],
                 [
-                    Tile::Taken(Piece{ rank: Rank::Rook, color: Color::White }),
-                    Tile::Taken(Piece{ rank: Rank::Knight, color: Color::White }),
-                    Tile::Taken(Piece{ rank: Rank::Bishop, color: Color::White }),
-                    Tile::Taken(Piece{ rank: Rank::Queen, color: Color::White }),
-                    Tile::Taken(Piece{ rank: Rank::King, color: Color::White }),
-                    Tile::Taken(Piece{ rank: Rank::Bishop, color: Color::White }),
-                    Tile::Taken(Piece{ rank: Rank::Knight, color: Color::White }),
-                    Tile::Taken(Piece{ rank: Rank::Rook, color: Color::White }),
+                    Tile::Taken(Piece{ rank: Rank::Rook, color: Color::Black }),
+                    Tile::Taken(Piece{ rank: Rank::Knight, color: Color::Black }),
+                    Tile::Taken(Piece{ rank: Rank::Bishop, color: Color::Black }),
+                    Tile::Taken(Piece{ rank: Rank::Queen, color: Color::Black }),
+                    Tile::Taken(Piece{ rank: Rank::King, color: Color::Black }),
+                    Tile::Taken(Piece{ rank: Rank::Bishop, color: Color::Black }),
+                    Tile::Taken(Piece{ rank: Rank::Knight, color: Color::Black }),
+                    Tile::Taken(Piece{ rank: Rank::Rook, color: Color::Black }),
                 ],
             ],
             color: Color::White,
@@ -90,7 +90,7 @@ mod tests {
     fn new() {
         let board = Board::new();
         assert!(board.grid[0][0] == Tile::Taken(Piece{ rank: Rank::Rook, color: Color::White }));
-        assert!(board.grid[7][7] == Tile::Taken(Piece{ rank: Rank::Rook, color: Color::White }));
+        assert!(board.grid[7][7] == Tile::Taken(Piece{ rank: Rank::Rook, color: Color::Black }));
         assert!(board.grid[3][3] == Tile::Empty);
         assert!(board.grid[4][4] == Tile::Empty);
         assert!(board.color == Color::White);
