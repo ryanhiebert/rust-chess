@@ -10,7 +10,6 @@ pub enum Tile {
 
 pub struct Board {
     pub grid: [[Tile; 8]; 8],
-    pub moves: Vec<Ply>,
 }
 
 impl Board {
@@ -46,7 +45,6 @@ impl Board {
                     Tile::Taken(Piece{ rank: Rank::Rook, color: Color::White }),
                 ],
             ],
-            moves: vec![],
         }
     }
 }
@@ -65,6 +63,5 @@ mod tests {
         assert!(board.grid[7][7] == Tile::Taken(Piece{ rank: Rank::Rook, color: Color::White }));
         assert!(board.grid[3][3] == Tile::Empty);
         assert!(board.grid[4][4] == Tile::Empty);
-        assert!(board.moves == vec![]);
     }
 }
