@@ -1,6 +1,6 @@
 use color::Color;
 use piece::{Piece, Rank};
-use ply::Ply;
+use ply::Location;
 
 #[derive(Copy, PartialEq)]
 pub enum Tile {
@@ -8,8 +8,28 @@ pub enum Tile {
     Taken(Piece),
 }
 
+#[derive(Copy, PartialEq)]
+pub struct Castling {
+    pub white_king: bool,
+    pub white_queen: bool,
+    pub black_king: bool,
+    pub black_queen: bool,
+}
+
+/// The Board internal representation is derived from the Forsyth-Edwards
+/// Notation (FEN) for recording the state of a game board. This
+/// representation alone should be sufficient to resume a game, without
+/// knowing the history of _how_ the pieces arrived at their destination.
+///
+/// http://en.wikipedia.org/wiki/Forsyth–Edwards_Notation
 pub struct Board {
     pub grid: [[Tile; 8]; 8],
+    pub color: Color,
+    pub castling: Castling,
+    pub enpassant: Option<Location>,
+    pub halfmove: u32,
+    pub fullmove: u32,
+
 }
 
 impl Board {
@@ -45,6 +65,16 @@ impl Board {
                     Tile::Taken(Piece{ rank: Rank::Rook, color: Color::White }),
                 ],
             ],
+            color: Color::White,
+            castling: Castling {
+                white_king: true,
+                white_queen: true,
+                black_king: true,
+                black_queen: true,
+            },
+            enpassant: None,
+            halfmove: 0,
+            fullmove: 1,
         }
     }
 }
@@ -52,7 +82,7 @@ impl Board {
 
 #[cfg(test)]
 mod tests {
-    use super::{Board, Tile};
+    use super::{Board, Tile, Castling};
     use piece::{Piece, Rank};
     use color::Color;
 
@@ -63,5 +93,15 @@ mod tests {
         assert!(board.grid[7][7] == Tile::Taken(Piece{ rank: Rank::Rook, color: Color::White }));
         assert!(board.grid[3][3] == Tile::Empty);
         assert!(board.grid[4][4] == Tile::Empty);
+        assert!(board.color == Color::White);
+        assert!(board.castling == Castling {
+            white_king: true,
+            white_queen: true,
+            black_king: true,
+            black_queen: true,
+        });
+        assert!(board.enpassant == None);
+        assert!(board.halfmove == 0);
+        assert!(board.fullmove == 1);
     }
 }
