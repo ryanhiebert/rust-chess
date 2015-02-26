@@ -13,13 +13,10 @@ pub struct Move {
 }
 
 #[derive(PartialEq)]
-pub struct Capture(Location);
-
-#[derive(PartialEq)]
 pub enum Ply {
-    Basic(Move, Option<Capture>),
-    EnPassant(Move, Capture),
-    Promotion(Move, Option<Capture>, Piece),
+    Basic(Move, Option<Location>),
+    EnPassant(Move, Location),
+    Promotion(Move, Option<Location>, Piece),
     Castling(Move, Move),
 }
 
@@ -28,7 +25,7 @@ pub enum Ply {
 mod tests {
     use piece::{Piece, Rank};
     use color::Color;
-    use super::{Location, Move, Capture, Ply};
+    use super::{Location, Move, Ply};
 
     #[test]
     fn location_eq() {
@@ -67,12 +64,6 @@ mod tests {
     }
 
     #[test]
-    fn capture_eq() {
-        let cap = Capture(Location { rank: 4, file: 2 });
-        assert!(cap == Capture(Location { rank: 4, file: 2 }));
-    }
-
-    #[test]
     fn ply_basic() {
         let mov = Move {
             from: Location { rank: 4, file: 2 },
@@ -95,10 +86,10 @@ mod tests {
             from: Location { rank: 4, file: 2 },
             to: Location { rank: 5, file: 3 },
         };
-        let enpassant_ply = Ply::EnPassant(mov, Capture(Location { rank: 6, file: 2 }));
+        let enpassant_ply = Ply::EnPassant(mov, Location { rank: 6, file: 2 });
 
         match enpassant_ply {
-            Ply::EnPassant(unply, Capture(loc)) => {
+            Ply::EnPassant(unply, loc) => {
                 assert!(unply.from == Location { rank: 4, file: 2 });
                 assert!(unply.to == Location { rank: 5, file: 3 });
                 assert!(loc == Location { rank: 6, file: 2});
