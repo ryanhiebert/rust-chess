@@ -13,10 +13,13 @@ pub struct Move {
 }
 
 #[derive(PartialEq)]
+pub struct Capture(Location);
+
+#[derive(PartialEq)]
 pub enum Ply {
-    Basic(Move),
-    EnPassant(Move),
-    Promotion(Move, Piece),
+    Basic(Move, Option<Capture>),
+    EnPassant(Move, Capture),
+    Promotion(Move, Option<Capture>, Piece),
     Castling(Move, Move),
 }
 
@@ -25,7 +28,7 @@ pub enum Ply {
 mod tests {
     use piece::{Piece, Rank};
     use color::Color;
-    use super::{Location, Move, Ply};
+    use super::{Location, Move, Capture, Ply};
 
     #[test]
     fn location_eq() {
@@ -64,15 +67,21 @@ mod tests {
     }
 
     #[test]
+    fn capture_eq() {
+        let cap = Capture(Location { rank: 4, file: 2 });
+        assert!(cap == Capture(Location { rank: 4, file: 2 }));
+    }
+
+    #[test]
     fn ply_basic() {
         let mov = Move {
             from: Location { rank: 4, file: 2 },
             to: Location { rank: 5, file: 3 },
         };
-        let basic_ply = Ply::Basic(mov);
+        let basic_ply = Ply::Basic(mov, None);
 
         match basic_ply {
-            Ply::Basic(unply) => {
+            Ply::Basic(unply, _) => {
                 assert!(unply.from == Location { rank: 4, file: 2 });
                 assert!(unply.to == Location { rank: 5, file: 3 });
             },
@@ -86,12 +95,13 @@ mod tests {
             from: Location { rank: 4, file: 2 },
             to: Location { rank: 5, file: 3 },
         };
-        let enpassant_ply = Ply::EnPassant(mov);
+        let enpassant_ply = Ply::EnPassant(mov, Capture(Location { rank: 6, file: 2 }));
 
         match enpassant_ply {
-            Ply::EnPassant(unply) => {
+            Ply::EnPassant(unply, Capture(loc)) => {
                 assert!(unply.from == Location { rank: 4, file: 2 });
                 assert!(unply.to == Location { rank: 5, file: 3 });
+                assert!(loc == Location { rank: 6, file: 2});
             },
             _ => panic!("Not an enpassant ply."),
         }
@@ -104,10 +114,10 @@ mod tests {
             to: Location { rank: 5, file: 3 },
         };
         let promotion_ply = Ply::Promotion(
-            mov, Piece { rank: Rank::Knight, color: Color::White });
+            mov, None, Piece { rank: Rank::Knight, color: Color::White });
 
         match promotion_ply {
-            Ply::Promotion(unply, piece) => {
+            Ply::Promotion(unply, _, piece) => {
                 assert!(unply.from == Location { rank: 4, file: 2 });
                 assert!(unply.to == Location { rank: 5, file: 3 });
                 assert!(piece == Piece {
