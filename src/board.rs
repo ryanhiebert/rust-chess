@@ -78,6 +78,10 @@ impl Board {
             fullmove: 1,
         }
     }
+
+    pub fn tile_at(&self, location: &Location) -> &Tile {
+        &self.grid[location.rank as usize][location.file as usize]
+    }
 }
 
 

@@ -1,6 +1,7 @@
 use piece::Piece;
+use board::{Tile,Board};
 
-#[derive(PartialEq)]
+#[derive(Copy, PartialEq)]
 pub struct Location {
     pub rank: u8,
     pub file: u8,
@@ -12,12 +13,60 @@ pub struct Move {
     to: Location,
 }
 
-#[derive(PartialEq)]
-pub enum Ply {
-    Basic(Move, Option<Location>),
-    EnPassant(Move, Location),
-    Promotion(Move, Option<Location>, Piece),
-    Castling(Move, Move),
+pub trait Ply {
+
+    /// Basic validation expected to be common to all implementations
+    fn validate_move(&self, board: &Board, mv: &Move, capture: &Option<Location>) -> bool {
+        // `from` must match the current board color
+        let from_ok = match *board.tile_at(&mv.from) {
+            Tile::Empty        => false,
+            Tile::Taken(piece) => piece.color == board.color,
+        };
+
+        // `to` must either be empty or be a capture of the other color
+        let to_ok = match (*board.tile_at(&mv.to), *capture) {
+            (Tile::Taken(piece), Some(location)) => location == mv.to && piece.color == board.color.other(),
+            (Tile::Empty,        None)           => true,
+            _                                    => false,
+        };
+
+        from_ok && to_ok
+    }
+
+    fn validate(&self, board: &Board) -> bool;
+}
+
+pub struct Basic(Move, Option<Location>);
+pub struct EnPassant(Move, Location);
+pub struct Promotion(Move, Option<Location>, Piece);
+pub struct Castling(Move, Move);
+
+impl Ply for Basic {
+    fn validate(&self, board: &Board) -> bool {
+        let Basic(ref mv, ref capture) = *self;
+        self.validate_move(board, mv, capture)
+    }
+}
+
+impl Ply for EnPassant {
+    fn validate(&self, board: &Board) -> bool {
+        let EnPassant(ref mv, ref capture) = *self;
+        self.validate_move(board, mv, &Some(*capture))
+    }
+}
+
+impl Ply for Promotion {
+    fn validate(&self, board: &Board) -> bool {
+        let Promotion(ref mv, ref capture, _) = *self;
+        self.validate_move(board, mv, capture)
+    }
+}
+
+impl Ply for Castling {
+    fn validate(&self, board: &Board) -> bool {
+        let Castling(ref mv1, ref mv2) = *self;
+        self.validate_move(board, mv1, &None) && self.validate_move(board, mv2, &None)
+    }
 }
 
 
@@ -25,7 +74,7 @@ pub enum Ply {
 mod tests {
     use piece::{Piece, Rank};
     use color::Color;
-    use super::{Location, Move, Ply};
+    use super::{Location, Move, Basic, EnPassant, Promotion, Castling};
 
     #[test]
     fn location_eq() {
@@ -64,64 +113,51 @@ mod tests {
     }
 
     #[test]
-    fn ply_basic() {
+    fn basic() {
         let mov = Move {
             from: Location { rank: 4, file: 2 },
             to: Location { rank: 5, file: 3 },
         };
-        let basic_ply = Ply::Basic(mov, None);
+        let basic_ply = Basic(mov, None);
 
-        match basic_ply {
-            Ply::Basic(unply, _) => {
-                assert!(unply.from == Location { rank: 4, file: 2 });
-                assert!(unply.to == Location { rank: 5, file: 3 });
-            },
-            _ => panic!("Not a basic ply."),
-        }
+        let Basic(unply, _) = basic_ply;
+        assert!(unply.from == Location { rank: 4, file: 2 });
+        assert!(unply.to == Location { rank: 5, file: 3 });
     }
 
     #[test]
-    fn ply_enpassant() {
+    fn enpassant() {
         let mov = Move {
             from: Location { rank: 4, file: 2 },
             to: Location { rank: 5, file: 3 },
         };
-        let enpassant_ply = Ply::EnPassant(mov, Location { rank: 6, file: 2 });
+        let enpassant_ply = EnPassant(mov, Location { rank: 6, file: 2 });
 
-        match enpassant_ply {
-            Ply::EnPassant(unply, loc) => {
-                assert!(unply.from == Location { rank: 4, file: 2 });
-                assert!(unply.to == Location { rank: 5, file: 3 });
-                assert!(loc == Location { rank: 6, file: 2});
-            },
-            _ => panic!("Not an enpassant ply."),
-        }
+        let EnPassant(unply, loc) = enpassant_ply;
+        assert!(unply.from == Location { rank: 4, file: 2 });
+        assert!(unply.to == Location { rank: 5, file: 3 });
+        assert!(loc == Location { rank: 6, file: 2});
     }
 
     #[test]
-    fn ply_promotion() {
+    fn promotion() {
         let mov = Move {
             from: Location { rank: 4, file: 2 },
             to: Location { rank: 5, file: 3 },
         };
-        let promotion_ply = Ply::Promotion(
+        let promotion_ply = Promotion(
             mov, None, Piece { rank: Rank::Knight, color: Color::White });
 
-        match promotion_ply {
-            Ply::Promotion(unply, _, piece) => {
-                assert!(unply.from == Location { rank: 4, file: 2 });
-                assert!(unply.to == Location { rank: 5, file: 3 });
-                assert!(piece == Piece {
-                    rank: Rank::Knight, color: Color::White });
-                assert!(piece.rank == Rank::Knight);
-                assert!(piece.color == Color::White);
-            },
-            _ => panic!("Not a promotion ply."),
-        }
+        let Promotion(unply, _, piece) = promotion_ply;
+        assert!(unply.from == Location { rank: 4, file: 2 });
+        assert!(unply.to == Location { rank: 5, file: 3 });
+        assert!(piece == Piece { rank: Rank::Knight, color: Color::White });
+        assert!(piece.rank == Rank::Knight);
+        assert!(piece.color == Color::White);
     }
 
     #[test]
-    fn ply_castling() {
+    fn castling() {
         let mov = Move {
             from: Location { rank: 4, file: 2 },
             to: Location { rank: 5, file: 3 },
@@ -130,16 +166,12 @@ mod tests {
             from: Location { rank: 2, file: 3 },
             to: Location { rank: 4, file: 5 },
         };
-        let castling_ply = Ply::Castling(mov, mov2);
+        let castling_ply = Castling(mov, mov2);
 
-        match castling_ply {
-            Ply::Castling(unply, unply2) => {
-                assert!(unply.from == Location { rank: 4, file: 2 });
-                assert!(unply.to == Location { rank: 5, file: 3 });
-                assert!(unply2.from == Location { rank: 2, file: 3 });
-                assert!(unply2.to == Location { rank: 4, file: 5 });
-            },
-            _ => panic!("Not a castling ply."),
-        }
+        let Castling(unply, unply2) = castling_ply;
+        assert!(unply.from == Location { rank: 4, file: 2 });
+        assert!(unply.to == Location { rank: 5, file: 3 });
+        assert!(unply2.from == Location { rank: 2, file: 3 });
+        assert!(unply2.to == Location { rank: 4, file: 5 });
     }
 }
