@@ -14,12 +14,17 @@ impl Color {
 }
 
 
-#[test]
-fn white_other() {
-    assert!(Color::White.other() == Color::Black);
-}
+#[cfg(test)]
+mod tests {
+    use super::Color;
 
-#[test]
-fn black_other() {
-    assert!(Color::Black.other() == Color::White);
+    #[test]
+    fn white_other() {
+        assert!(Color::White.other() == Color::Black);
+    }
+
+    #[test]
+    fn black_other() {
+        assert!(Color::Black.other() == Color::White);
+    }
 }

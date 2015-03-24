@@ -17,26 +17,32 @@ pub struct Piece {
 }
 
 
-#[test]
-fn ranks() {
-    assert!(Rank::Pawn == Rank::Pawn);
-    assert!(Rank::Rook == Rank::Rook);
-    assert!(Rank::Knight == Rank::Knight);
-    assert!(Rank::Bishop == Rank::Bishop);
-    assert!(Rank::Queen == Rank::Queen);
-    assert!(Rank::King == Rank::King);
-}
+#[cfg(test)]
+mod tests {
+    use super::{Rank, Piece};
+    use color::Color;
 
-#[test]
-fn pieces() {
-    let white = Piece { rank: Rank::Queen, color: Color::White };
-    let black = Piece { rank: Rank::King, color: Color::Black };
+    #[test]
+    fn ranks() {
+        assert!(Rank::Pawn == Rank::Pawn);
+        assert!(Rank::Rook == Rank::Rook);
+        assert!(Rank::Knight == Rank::Knight);
+        assert!(Rank::Bishop == Rank::Bishop);
+        assert!(Rank::Queen == Rank::Queen);
+        assert!(Rank::King == Rank::King);
+    }
 
-    assert!(white == Piece { rank: Rank::Queen, color: Color::White });
-    assert!(black == Piece { rank: Rank::King, color: Color::Black });
+    #[test]
+    fn pieces() {
+        let white = Piece { rank: Rank::Queen, color: Color::White };
+        let black = Piece { rank: Rank::King, color: Color::Black };
 
-    assert!(white.rank == Rank::Queen);
-    assert!(white.color == Color::White);
-    assert!(black.rank == Rank::King);
-    assert!(black.color == Color::Black);
+        assert!(white == Piece { rank: Rank::Queen, color: Color::White });
+        assert!(black == Piece { rank: Rank::King, color: Color::Black });
+
+        assert!(white.rank == Rank::Queen);
+        assert!(white.color == Color::White);
+        assert!(black.rank == Rank::King);
+        assert!(black.color == Color::Black);
+    }
 }
