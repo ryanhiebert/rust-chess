@@ -22,6 +22,7 @@ pub struct Castling {
 /// knowing the history of _how_ the pieces arrived at their destination.
 ///
 /// http://en.wikipedia.org/wiki/Forsyth–Edwards_Notation
+#[derive(PartialEq)]
 pub struct Board {
     pub grid: [[Tile; 8]; 8],
     pub color: Color,
