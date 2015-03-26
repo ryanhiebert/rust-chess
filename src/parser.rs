@@ -34,16 +34,18 @@ impl Notation for FromToZeroIntegers {
 }
 
 
-#[cfg(tests)]
+#[cfg(test)]
 mod tests {
     use board::Board;
+    use ply::{Ply, Location, Move};
     use super::FromToZeroIntegers;
+    use super::Notation;
 
     #[test]
     fn parse() {
         let notation = FromToZeroIntegers;
         let ply = notation.parse(&Board::new(), "00 01");
-        let expected = Option(Ply::Basic(Move {
+        let expected = Some(Ply::Basic(Move {
             from: Location { file: 0, rank: 0 },
             to: Location { file: 0, rank: 1 },
          }, None));
