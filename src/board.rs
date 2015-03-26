@@ -78,6 +78,10 @@ impl Board {
             fullmove_number: 1,
         }
     }
+
+    pub fn tile_at(&self, location: &Location) -> &Tile {
+        &self.grid[location.rank as usize][location.file as usize]
+    }
 }
 
 
@@ -86,6 +90,7 @@ mod tests {
     use super::{Board, Tile, Castling};
     use piece::{Piece, Rank};
     use color::Color;
+    use ply::Location;
 
     #[test]
     fn new() {
@@ -104,5 +109,12 @@ mod tests {
         assert!(board.enpassant == None);
         assert!(board.halfmove_clock == 0);
         assert!(board.fullmove_number == 1);
+    }
+
+    #[test]
+    fn tile_at() {
+        let location = Location { rank: 0, file: 0 };
+        let expected_piece = Piece { rank: Rank::Rook, color: Color::White };
+        assert!(Board::new().tile_at(&location) == &Tile::Taken(expected_piece));
     }
 }
