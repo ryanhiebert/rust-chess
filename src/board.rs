@@ -22,7 +22,7 @@ pub struct Castling {
 /// knowing the history of _how_ the pieces arrived at their destination.
 ///
 /// http://en.wikipedia.org/wiki/Forsyth–Edwards_Notation
-#[derive(PartialEq, Eq)]
+#[derive(Copy, Clone, PartialEq, Eq)]
 pub struct Board {
     pub grid: [[Tile; 8]; 8],
     pub color: Color,
@@ -116,5 +116,14 @@ mod tests {
         let location = Location { rank: 0, file: 0 };
         let expected_piece = Piece { rank: Rank::Rook, color: Color::White };
         assert!(Board::new().tile_at(&location) == &Tile::Taken(expected_piece));
+    }
+
+    #[test]
+    fn clone_and_mutate() {
+        let board1 = Board::new();
+        let mut board2 = board1.clone();
+        board2.color = Color::Black;
+        assert!(board1.color == Color::White);
+        assert!(board2.color == Color::Black);
     }
 }
