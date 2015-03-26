@@ -1,12 +1,14 @@
 use board::Board;
+use ply::Ply;
 
 pub struct Game {
-    pub board: Board
+    pub board: Board,
+    pub log: Vec<Ply>,
 }
 
 impl Game {
     pub fn new() -> Game {
-        Game{ board: Board::new() }
+        Game{ board: Board::new(), log: Vec::new() }
     }
 }
 
@@ -20,5 +22,6 @@ mod tests {
     fn new() {
         let game = Game::new();
         assert!(game.board == Board::new());
+        assert!(game.log == Vec::new());
     }
 }
