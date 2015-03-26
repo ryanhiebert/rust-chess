@@ -28,8 +28,8 @@ pub struct Board {
     pub color: Color,
     pub castling: Castling,
     pub enpassant: Option<Location>,
-    pub halfmove: u32,
-    pub fullmove: u32,
+    pub halfmove_clock: u32,
+    pub fullmove_number: u32,
 
 }
 
@@ -74,8 +74,8 @@ impl Board {
                 black_queen: true,
             },
             enpassant: None,
-            halfmove: 0,
-            fullmove: 1,
+            halfmove_clock: 0,
+            fullmove_number: 1,
         }
     }
 }
@@ -102,7 +102,7 @@ mod tests {
             black_queen: true,
         });
         assert!(board.enpassant == None);
-        assert!(board.halfmove == 0);
-        assert!(board.fullmove == 1);
+        assert!(board.halfmove_clock == 0);
+        assert!(board.fullmove_number == 1);
     }
 }
