@@ -8,8 +8,8 @@ pub struct Location {
 
 #[derive(Copy, Clone, PartialEq, Eq)]
 pub struct Move {
-    from: Location,
-    to: Location,
+    pub from: Location,
+    pub to: Location,
 }
 
 #[derive(Copy, Clone, PartialEq, Eq)]
