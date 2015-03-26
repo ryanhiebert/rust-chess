@@ -1,18 +1,18 @@
 use piece::Piece;
 
-#[derive(PartialEq)]
+#[derive(PartialEq, Eq)]
 pub struct Location {
     pub rank: u8,
     pub file: u8,
 }
 
-#[derive(PartialEq)]
+#[derive(PartialEq, Eq)]
 pub struct Move {
     from: Location,
     to: Location,
 }
 
-#[derive(PartialEq)]
+#[derive(PartialEq, Eq)]
 pub enum Ply {
     Basic(Move, Option<Location>),
     EnPassant(Move, Location),

@@ -2,13 +2,13 @@ use color::Color;
 use piece::{Piece, Rank};
 use ply::Location;
 
-#[derive(Copy, PartialEq)]
+#[derive(Copy, Clone, PartialEq, Eq)]
 pub enum Tile {
     Empty,
     Taken(Piece),
 }
 
-#[derive(Copy, PartialEq)]
+#[derive(Copy, Clone, PartialEq, Eq)]
 pub struct Castling {
     pub white_king: bool,
     pub white_queen: bool,
@@ -22,7 +22,7 @@ pub struct Castling {
 /// knowing the history of _how_ the pieces arrived at their destination.
 ///
 /// http://en.wikipedia.org/wiki/Forsyth–Edwards_Notation
-#[derive(PartialEq)]
+#[derive(PartialEq, Eq)]
 pub struct Board {
     pub grid: [[Tile; 8]; 8],
     pub color: Color,
