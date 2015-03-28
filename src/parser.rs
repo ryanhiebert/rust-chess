@@ -24,12 +24,32 @@ pub trait Notation {
 pub struct FromToZeroIntegers;
 
 impl Notation for FromToZeroIntegers {
-    fn parse(&self, _: &Board, _: &str) -> Option<Ply> {
-        //let re = regex!(r"^(\d{2}) *(\d{2})");
-        Some(Ply::Basic(Move {
-            from: Location { file: 0, rank: 0 },
-            to: Location { file: 0, rank: 1 },
-        }, None))
+    fn parse(&self, _: &Board, input: &str) -> Option<Ply> {
+        let re = regex!(r"^(\d)(\d) *(\d)(\d)");
+        let captures = re.captures(input);
+        match captures {
+            None           => None,
+            Some(captures) => {
+                let from = self.parse_location(captures.at(1), captures.at(2));
+                let to = self.parse_location(captures.at(3), captures.at(4));
+
+                match (from, to) {
+                    (Some(from), Some(to)) => {
+                        Some(Ply::Basic(Move { from: from, to: to }, None))
+                    },
+                    _ => None,
+                }
+            },
+        }
+    }
+}
+
+impl FromToZeroIntegers {
+    fn parse_location(&self, file: Option<&str>, rank: Option<&str>) -> Option<Location> {
+        match (file.unwrap_or("").parse().ok(), rank.unwrap_or("").parse().ok()) {
+            (Some(file), Some(rank)) if file < 8 && rank < 8 => Some(Location { file: file, rank: rank }),
+            _ => None,
+        }
     }
 }
 
@@ -49,6 +69,13 @@ mod tests {
             from: Location { file: 0, rank: 0 },
             to: Location { file: 0, rank: 1 },
          }, None));
+        assert!(ply == expected);
+
+        let ply = notation.parse(&Board::new(), "77 76");
+        let expected = Some(Ply::Basic(Move {
+            from: Location { file: 7, rank: 7 },
+            to: Location { file: 7, rank: 6 },
+        }, None));
         assert!(ply == expected);
     }
 }
