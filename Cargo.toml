@@ -6,4 +6,3 @@ authors = ["Ryan Hiebert <ryan@ryanhiebert.com>"]
 
 [dependencies]
 regex = "0.1.21"
-regex_macros = "0.1.13"

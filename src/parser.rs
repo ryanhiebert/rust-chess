@@ -1,5 +1,11 @@
 use ply::{Ply, Location, Move};
 use board::Board;
+use regex;
+
+
+macro_rules! regex {
+    ($s:expr) => (regex::Regex::new($s).unwrap());
+}
 
 
 pub trait Notation {
