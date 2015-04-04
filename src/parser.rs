@@ -1,5 +1,5 @@
 use ply::{Ply, Location, Move};
-use board::Board;
+use board::{Board, Tile};
 use regex;
 
 
@@ -32,7 +32,7 @@ pub trait Notation {
 pub struct FromToZeroIntegers;
 
 impl Notation for FromToZeroIntegers {
-    fn parse(&self, _: &Board, input: &str) -> Option<Ply> {
+    fn parse(&self, board: &Board, input: &str) -> Option<Ply> {
         let re = regex!(r"^(\d)(\d) *(\d)(\d)");
         let captures = re.captures(input);
         match captures {
@@ -43,7 +43,11 @@ impl Notation for FromToZeroIntegers {
 
                 match (from, to) {
                     (Some(from), Some(to)) => {
-                        Some(Ply::Basic(Move { from: from, to: to }, None))
+                        let capture = match *board.tile_at(&to) {
+                            Tile::Empty    => None,
+                            Tile::Taken(_) => Some(to),
+                        };
+                        Some(Ply::Basic(Move { from: from, to: to }, capture))
                     },
                     _ => None,
                 }
@@ -72,18 +76,20 @@ mod tests {
     #[test]
     fn parse() {
         let notation = FromToZeroIntegers;
-        let ply = notation.parse(&Board::new(), "00 01");
+        let ply = notation.parse(&Board::new(), "01 02");
+        // Non-capturing move
         let expected = Some(Ply::Basic(Move {
-            from: Location { file: 0, rank: 0 },
-            to: Location { file: 0, rank: 1 },
+            from: Location { file: 0, rank: 1 },
+            to: Location { file: 0, rank: 2 },
          }, None));
         assert!(ply == expected);
 
         let ply = notation.parse(&Board::new(), "77 76");
+        // Capturing move
         let expected = Some(Ply::Basic(Move {
             from: Location { file: 7, rank: 7 },
             to: Location { file: 7, rank: 6 },
-        }, None));
+        }, Some(Location { file: 7, rank: 6 })));
         assert!(ply == expected);
     }
 }
