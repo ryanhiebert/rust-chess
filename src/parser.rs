@@ -29,9 +29,9 @@ pub trait Notation {
 ///
 /// 00 01  // a1 a2
 /// 77 76  // h8 h7
-pub struct FromToZeroIntegers;
+pub struct ZeroIntegersNotation;
 
-impl Notation for FromToZeroIntegers {
+impl Notation for ZeroIntegersNotation {
     fn parse(&self, board: &Board, input: &str) -> Option<Ply> {
         let re = regex!(r"^(\d)(\d) *(\d)(\d)");
         let captures = re.captures(input);
@@ -56,7 +56,7 @@ impl Notation for FromToZeroIntegers {
     }
 }
 
-impl FromToZeroIntegers {
+impl ZeroIntegersNotation {
     fn parse_location(&self, file: Option<&str>, rank: Option<&str>) -> Option<Location> {
         match (file.unwrap_or("").parse().ok(), rank.unwrap_or("").parse().ok()) {
             (Some(file), Some(rank)) if file < 8 && rank < 8 => Some(Location { file: file, rank: rank }),
@@ -70,12 +70,12 @@ impl FromToZeroIntegers {
 mod tests {
     use board::Board;
     use ply::{Ply, Location, Move};
-    use super::FromToZeroIntegers;
+    use super::ZeroIntegersNotation;
     use super::Notation;
 
     #[test]
     fn parse() {
-        let notation = FromToZeroIntegers;
+        let notation = ZeroIntegersNotation;
         let ply = notation.parse(&Board::new(), "01 02");
         // Non-capturing move
         let expected = Some(Ply::Basic(Move {
