@@ -3,6 +3,8 @@ use board::Board;
 use regex;
 
 
+// Shortcut macro for creating a regular expression.
+// Will panic! if the regular expression isn't valid.
 macro_rules! regex {
     ($s:expr) => (regex::Regex::new($s).unwrap());
 }
