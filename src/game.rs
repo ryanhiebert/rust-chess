@@ -1,5 +1,5 @@
-use board::Board;
-use ply::Ply;
+use board::{Board, Tile};
+use ply::{Ply, Location, Move};
 use notation::Notation;
 
 pub struct Game {
@@ -14,6 +14,31 @@ impl Game {
 
     pub fn parse(&self, notation: &Notation, input: &str) -> Option<Ply> {
         notation.parse(&self.board, input)
+    }
+
+    fn play_basic(&mut self, mv: Move, capture: Option<Location>) {
+        match capture {
+            Some(location) => {
+                self.board.grid[location.file as usize][location.rank as usize] = Tile::Empty;
+            },
+            None => (),
+        };
+
+        // Move the piece to the new tile
+        // TODO: The move needs to be validated.
+        self.board.grid[mv.to.file as usize][mv.to.rank as usize] = self.board.grid[mv.from.file as usize][mv.from.rank as usize];
+        self.board.grid[mv.from.file as usize][mv.from.rank as usize] = Tile::Empty;
+
+    }
+
+    pub fn play(&mut self, ply: &Ply) {
+        match *ply {
+            Ply::Basic(mv, capture) => self.play_basic(mv, capture),
+            _ => panic!("I don't know what to do with that ply yet."),
+        }
+
+        // If we didn't need to panic, then store the ply in the log.
+        self.log.push(*ply);
     }
 }
 
