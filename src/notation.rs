@@ -10,8 +10,8 @@ macro_rules! regex {
 }
 
 
-pub trait Notation {
-    fn parse(&self, board: &Board, input: &str) -> Option<Ply>;
+pub trait PlyInputNotation {
+    fn parse_ply(&self, board: &Board, input: &str) -> Option<Ply>;
 }
 
 
@@ -31,8 +31,8 @@ pub trait Notation {
 /// 77 76  // h8 h7
 pub struct ZeroIntegersNotation;
 
-impl Notation for ZeroIntegersNotation {
-    fn parse(&self, board: &Board, input: &str) -> Option<Ply> {
+impl PlyInputNotation for ZeroIntegersNotation {
+    fn parse_ply(&self, board: &Board, input: &str) -> Option<Ply> {
         let re = regex!(r"^(\d)(\d) *(\d)(\d)");
         let captures = re.captures(input);
         match captures {
@@ -71,12 +71,12 @@ mod tests {
     use board::Board;
     use ply::{Ply, Location, Move};
     use super::ZeroIntegersNotation;
-    use super::Notation;
+    use super::PlyInputNotation;
 
     #[test]
-    fn parse() {
+    fn parse_ply() {
         let notation = ZeroIntegersNotation;
-        let ply = notation.parse(&Board::new(), "01 02");
+        let ply = notation.parse_ply(&Board::new(), "01 02");
         // Non-capturing move
         let expected = Some(Ply::Basic(Move {
             from: Location { file: 0, rank: 1 },
@@ -84,7 +84,7 @@ mod tests {
          }, None));
         assert!(ply == expected);
 
-        let ply = notation.parse(&Board::new(), "77 76");
+        let ply = notation.parse_ply(&Board::new(), "77 76");
         // Capturing move
         let expected = Some(Ply::Basic(Move {
             from: Location { file: 7, rank: 7 },

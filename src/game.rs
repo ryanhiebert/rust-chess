@@ -1,6 +1,6 @@
 use board::{Board, Tile};
 use ply::{Ply, Location, Move};
-use notation::Notation;
+use notation::PlyInputNotation;
 
 pub struct Game {
     pub board: Board,
@@ -12,8 +12,8 @@ impl Game {
         Game{ board: Board::new(), log: Vec::new() }
     }
 
-    pub fn parse(&self, notation: &Notation, input: &str) -> Option<Ply> {
-        notation.parse(&self.board, input)
+    pub fn parse_ply(&self, notation: &PlyInputNotation, input: &str) -> Option<Ply> {
+        notation.parse_ply(&self.board, input)
     }
 
     fn play_basic(&mut self, mv: Move, capture: Option<Location>) {
@@ -47,7 +47,7 @@ impl Game {
 mod tests {
     use super::Game;
     use board::Board;
-    use notation::Notation;
+    use notation::PlyInputNotation;
     use ply::{Ply, Location, Move};
 
     #[test]
@@ -57,10 +57,10 @@ mod tests {
         assert!(game.log == Vec::new());
     }
 
-    struct TestNotation;
+    struct TestPlyInputNotation;
 
-    impl Notation for TestNotation {
-        fn parse(&self, _: &Board, _: &str)-> Option<Ply> {
+    impl PlyInputNotation for TestPlyInputNotation {
+        fn parse_ply(&self, _: &Board, _: &str)-> Option<Ply> {
             Some(Ply::Basic(Move {
                 from: Location { file: 0, rank: 1 },
                 to: Location { file: 0, rank: 2 },
@@ -69,13 +69,13 @@ mod tests {
     }
 
     #[test]
-    fn parse() {
-        let notation = &TestNotation;
+    fn parse_ply() {
+        let notation = &TestPlyInputNotation;
         let expected = Some(Ply::Basic(Move {
                 from: Location { file: 0, rank: 1 },
                 to: Location { file: 0, rank: 2 },
         }, None));
         let game = Game::new();
-        assert!(game.parse(notation, "random") == expected);
+        assert!(game.parse_ply(notation, "random") == expected);
     }
 }
