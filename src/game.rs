@@ -1,6 +1,6 @@
 use board::{Board, Tile};
 use ply::{Ply, Location, Move};
-use notation::PlyInputNotation;
+use notation::{PlyInputNotation, BoardOutputNotation};
 
 pub struct Game {
     pub board: Board,
@@ -14,6 +14,10 @@ impl Game {
 
     pub fn parse_ply(&self, notation: &PlyInputNotation, input: &str) -> Option<Ply> {
         notation.parse_ply(&self.board, input)
+    }
+
+    pub fn unparse_board(&self, notation: &BoardOutputNotation) -> String {
+        notation.unparse_board(&self.board)
     }
 
     fn play_basic(&mut self, mv: Move, capture: Option<Location>) {
