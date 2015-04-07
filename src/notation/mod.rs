@@ -1,8 +1,9 @@
 use ply::Ply;
-use board::Board;
+use board::{Board, Tile};
 
 pub use notation::fen::ForsythEdwardsNotation;
 pub use notation::zero_int::ZeroIntegersNotation;
+pub use notation::displayboard::DisplayBoardNotation;
 
 
 // Shortcut macro for creating a regular expression.
@@ -21,6 +22,13 @@ pub trait BoardOutputNotation {
     fn unparse_board(&self, board: &Board) -> String;
 }
 
+pub trait BoardOutputNotationHelper {
+    fn unparse_tile(&self, tile: &Tile) -> String;
+    fn file_label(&self, file: u8) -> String;
+    fn rank_label(&self, rank: u8) -> String;
+}
+
 
 mod fen;
 mod zero_int;
+mod displayboard;

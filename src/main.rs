@@ -16,4 +16,7 @@ fn main() {
         None      => panic!("Not a valid move."),
     };
     println!("{}", game.unparse_board(output_notation));
+
+    let output_notation = &chess::notation::DisplayBoardNotation::new(chess::notation::ZeroIntegersNotation);
+    println!("{}", chess::Game::new().unparse_board(output_notation));
 }
