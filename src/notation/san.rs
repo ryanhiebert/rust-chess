@@ -7,37 +7,48 @@ use regex;
 use notation::{PlyInputNotation, BoardOutputNotationHelper};
 
 
-/// Simplest input method to parse.
-/// Takes pairs of zero based integers to form the move.
+/// Standard Algebraic Notation
+/// Takes the standard algebraic notation of the positions of the move.
 /// Captures are determined automatically.
-/// Special moves are not allowed, including promotions.
+/// Both positions must be written full-form.
 ///
 /// Examples:
 ///
-/// 00 01  // a1 a2
-/// 77 76  // h8 h7
-pub struct ZeroIntegersNotation;
+/// a1 a2
+/// h8 h7
+pub struct StandardAlgebraicNotation;
 
-impl BoardOutputNotationHelper for ZeroIntegersNotation {
+impl BoardOutputNotationHelper for StandardAlgebraicNotation {
     fn unparse_tile(&self, tile: &Tile) -> String {
         match *tile {
             Tile::Empty            => " ".to_string(),
             Tile::Taken(ref piece) => self.unparse_piece(piece).to_string(),
         }
     }
-    
+
     fn file_label(&self, file: u8) -> String {
-        file.to_string()
+        let label = match file {
+            0 => 'a',
+            1 => 'b',
+            2 => 'c',
+            3 => 'd',
+            4 => 'e',
+            5 => 'f',
+            6 => 'g',
+            7 => 'h',
+            _ => panic!("Invalid board file."),
+        };
+        label.to_string()
     }
 
     fn rank_label(&self, rank: u8) -> String {
-        rank.to_string()
+        (rank + 1).to_string()
     }
 }
 
-impl PlyInputNotation for ZeroIntegersNotation {
+impl PlyInputNotation for StandardAlgebraicNotation {
     fn parse_ply(&self, board: &Board, input: &str) -> Option<Ply> {
-        let re = regex!(r"^(\d)(\d) *(\d)(\d)");
+        let re = regex!(r"^([a-h])([1-8]) *([a-h])([1-8])");
         let captures = re.captures(input);
         match captures {
             None           => None,
@@ -60,10 +71,24 @@ impl PlyInputNotation for ZeroIntegersNotation {
     }
 }
 
-impl ZeroIntegersNotation {
+impl StandardAlgebraicNotation {
     fn parse_location(&self, file: Option<&str>, rank: Option<&str>) -> Option<Location> {
-        match (file.unwrap_or("").parse().ok(), rank.unwrap_or("").parse().ok()) {
-            (Some(file), Some(rank)) if file < 8 && rank < 8 => Some(Location { file: file, rank: rank }),
+        let file = match file.unwrap_or("") {
+            "a" => Some(0),
+            "b" => Some(1),
+            "c" => Some(2),
+            "d" => Some(3),
+            "e" => Some(4),
+            "f" => Some(5),
+            "g" => Some(6),
+            "h" => Some(7),
+            _   => None,
+        };
+        let rank: Option<u8> = rank.unwrap_or("").parse::<u8>().ok();
+        match (file, rank) {
+            (Some(file), Some(rank)) if (0 < rank && rank < 9) => {
+                Some(Location { file: file, rank: rank - 1u8})
+            },
             _ => None,
         }
     }
@@ -80,7 +105,7 @@ impl ZeroIntegersNotation {
 
         match piece.color {
             Color::White => chr.to_uppercase().next().unwrap(),
-            Color::Black => chr,
+            Color::Black => chr.to_lowercase().next().unwrap(),
         }
     }
 }
@@ -90,26 +115,30 @@ impl ZeroIntegersNotation {
 mod tests {
     use board::Board;
     use ply::{Ply, Location, Move};
-    use super::ZeroIntegersNotation;
+    use super::StandardAlgebraicNotation;
     use notation::PlyInputNotation;
 
     #[test]
-    fn parse_ply() {
-        let notation = ZeroIntegersNotation;
-        let ply = notation.parse_ply(&Board::new(), "01 02");
-        // Non-capturing move
+    fn parse_ply_nocapture() {
+        let notation = StandardAlgebraicNotation;
+        let ply = notation.parse_ply(&Board::new(), "a2 a3");
+
         let expected = Some(Ply::Basic(Move {
             from: Location { file: 0, rank: 1 },
             to: Location { file: 0, rank: 2 },
-         }, None));
-        assert!(ply == expected);
+        }, None));
+        assert_eq!(ply, expected);
+    }
 
-        let ply = notation.parse_ply(&Board::new(), "77 76");
-        // Capturing move
+    #[test]
+    fn parse_ply_capture() {
+        let notation = StandardAlgebraicNotation;
+        let ply = notation.parse_ply(&Board::new(), "h8 h7");
+
         let expected = Some(Ply::Basic(Move {
             from: Location { file: 7, rank: 7 },
             to: Location { file: 7, rank: 6 },
         }, Some(Location { file: 7, rank: 6 })));
-        assert!(ply == expected);
+        assert_eq!(ply, expected);
     }
 }

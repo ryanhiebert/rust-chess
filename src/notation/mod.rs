@@ -2,7 +2,7 @@ use ply::Ply;
 use board::{Board, Tile};
 
 pub use notation::fen::ForsythEdwardsNotation;
-pub use notation::zero_int::ZeroIntegersNotation;
+pub use notation::san::StandardAlgebraicNotation;
 pub use notation::displayboard::DisplayBoardNotation;
 
 
@@ -30,5 +30,5 @@ pub trait BoardOutputNotationHelper {
 
 
 mod fen;
-mod zero_int;
+mod san;
 mod displayboard;

@@ -7,8 +7,8 @@ use std::io::prelude::*;
 #[cfg(not(test))]
 fn main() {
     println!("This is Chess.");
-    let input_notation = &chess::notation::ZeroIntegersNotation;
-    let output_notation = &chess::notation::DisplayBoardNotation::new(chess::notation::ZeroIntegersNotation);
+    let input_notation = &chess::notation::StandardAlgebraicNotation;
+    let output_notation = &chess::notation::DisplayBoardNotation::new(chess::notation::StandardAlgebraicNotation);
 
     let mut game = &mut chess::Game::new();
     println!("{}", game.unparse_board(output_notation));
