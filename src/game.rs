@@ -32,7 +32,6 @@ impl Game {
         // TODO: The move needs to be validated.
         self.board.grid[mv.to.rank as usize][mv.to.file as usize] = self.board.grid[mv.from.rank as usize][mv.from.file as usize];
         self.board.grid[mv.from.rank as usize][mv.from.file as usize] = Tile::Empty;
-
     }
 
     pub fn play(&mut self, ply: &Ply) {

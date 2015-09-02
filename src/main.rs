@@ -22,4 +22,6 @@ fn main() {
         }
         println!("{}", game.unparse_board(output_notation));
     }
+
+    println!("Thanks for playing!");
 }
