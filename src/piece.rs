@@ -1,6 +1,6 @@
 use color::Color;
 
-#[derive(Copy, Clone, PartialEq, Eq)]
+#[derive(Copy, Clone, PartialEq, Eq, Debug)]
 pub enum Rank {
     Pawn,
     Rook,
@@ -10,7 +10,7 @@ pub enum Rank {
     King,
 }
 
-#[derive(Copy, Clone, PartialEq, Eq)]
+#[derive(Copy, Clone, PartialEq, Eq, Debug)]
 pub struct Piece {
     pub rank: Rank,
     pub color: Color,
