@@ -23,7 +23,7 @@ impl Game {
     fn play_basic(&mut self, mv: Move, capture: Option<Location>) {
         match capture {
             Some(location) => {
-                self.board.grid[location.file as usize][location.rank as usize] = Tile::Empty;
+                self.board.grid[location.rank as usize][location.file as usize] = Tile::Empty;
             },
             None => (),
         };
