@@ -2,8 +2,11 @@ use board::{Board, Tile};
 use ply::{Ply, Location, Move};
 use notation::{PlyInputNotation, BoardOutputNotation};
 
+/// A game wraps a playable board.
 pub struct Game {
+    /// The current state
     pub board: Board,
+    /// A vec of the plys
     pub log: Vec<Ply>,
 }
 
