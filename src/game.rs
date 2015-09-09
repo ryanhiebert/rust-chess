@@ -42,6 +42,8 @@ impl Game {
 
         // If we didn't need to panic, then store the ply in the log.
         self.log.push(*ply);
+
+        self.board.color = self.board.color.other();
     }
 }
 
