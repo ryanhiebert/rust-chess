@@ -58,8 +58,17 @@ impl<T: BoardOutputNotationHelper> DisplayBoardNotation<T> {
     }
 
     fn unparse_castling(&self, castling: &Castling) -> String {
-        "KQkq".to_string()
+        let mut output = String::new();
+
+        output.push_str(if castling.white_king { "K" } else { "" });
+        output.push_str(if castling.white_queen { "Q" } else { "" });
+        output.push_str(if castling.black_king { "k" } else { "" });
+        output.push_str(if castling.black_queen { "q" } else { "" });
+
+        if &output == "" { output.push_str("-") };
+        output
     }
+
     fn unparse_enpassant(&self, enpassant: &Option<Location>) -> String {
         "-".to_string()
     }
