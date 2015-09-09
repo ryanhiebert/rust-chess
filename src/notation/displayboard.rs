@@ -111,8 +111,7 @@ mod tests {
             }
         }
 
-        fn unparse_location(&self, location: &Location) -> String { "-".to_string() }
-
+        fn unparse_location(&self, _: &Location) -> String { "-".to_string() }
         fn file_label(&self, file: u8) -> String { file.to_string() }
         fn rank_label(&self, rank: u8) -> String { rank.to_string() }
     }
