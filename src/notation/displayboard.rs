@@ -70,7 +70,10 @@ impl<T: BoardOutputNotationHelper> DisplayBoardNotation<T> {
     }
 
     fn unparse_enpassant(&self, enpassant: &Option<Location>) -> String {
-        "-".to_string()
+        match *enpassant {
+            Some(location) => self.helper.unparse_location(&location),
+            None           => "-".to_string()
+        }
     }
 }
 
@@ -78,6 +81,7 @@ impl<T: BoardOutputNotationHelper> DisplayBoardNotation<T> {
 #[cfg(test)]
 mod tests {
     use notation::{BoardOutputNotation, BoardOutputNotationHelper};
+    use ply::Location;
     use color::Color;
     use board::{Board, Tile};
     use piece::Rank;
@@ -106,6 +110,8 @@ mod tests {
                 },
             }
         }
+
+        fn unparse_location(&self, location: &Location) -> String { "-".to_string() }
 
         fn file_label(&self, file: u8) -> String { file.to_string() }
         fn rank_label(&self, rank: u8) -> String { rank.to_string() }

@@ -26,6 +26,12 @@ impl BoardOutputNotationHelper for StandardAlgebraicNotation {
         }
     }
 
+    fn unparse_location(&self, location: &Location) -> String {
+        let mut output = self.file_label(location.file);
+        output.push_str(&self.rank_label(location.rank));
+        output
+    }
+
     fn file_label(&self, file: u8) -> String {
         let label = match file {
             0 => 'a',

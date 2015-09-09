@@ -1,4 +1,4 @@
-use ply::Ply;
+use ply::{Ply, Location};
 use board::{Board, Tile};
 
 pub use notation::fen::ForsythEdwardsNotation;
@@ -24,6 +24,7 @@ pub trait BoardOutputNotation {
 
 pub trait BoardOutputNotationHelper {
     fn unparse_tile(&self, tile: &Tile) -> String;
+    fn unparse_location(&self, location: &Location) -> String;
     fn file_label(&self, file: u8) -> String;
     fn rank_label(&self, rank: u8) -> String;
 }
