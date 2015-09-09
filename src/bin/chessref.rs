@@ -4,7 +4,6 @@ use std::io;
 use std::io::prelude::*;
 
 
-#[cfg(not(test))]
 fn main() {
     println!("This is Chess.");
     let input_notation = &chess::notation::StandardAlgebraicNotation;
